@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="canvas" width="600" height="600" style="border:1px solid #c3c3c3;">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+<script src="js/Canvas.js"></script>
+<script src="js/Game.js"></script>
+<script src="js/GameObject.js"></script>
+
+<script>
+    var game = new Game('Minesweeper');
+    var canvas = new Canvas('canvas', 600, 600);
+    var ball = new GameObject(0,0,10,10);
+
+
+    game.init(ball);
+    game.setCanvas(canvas);
+
+    window.setInterval(game.loop, 17);
+</script>
+
+</body>
+</html>
