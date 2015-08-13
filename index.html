@@ -16,11 +16,11 @@
     var game = new Game('canvas', 'Minesweeper', 15, 9, 50);
 
     window.setInterval(
-            (function(self) {
-                return function(){
-                    self.loop();
-                }
-            })(game), 17
+        (function(self) {
+            return function(){
+                self.loop();
+            }
+        })(game), 17
     );
 </script>
 
