@@ -1,8 +1,8 @@
-function Tile(x, y, w, h) {
+function Tile(x, y, tileSize) {
     GameObject.call(this, x, y);
 
-    this.w = w;
-    this.h = h;
+    this.w = tileSize;
+    this.h = tileSize;
 }
 
 Tile.prototype.setType = function(type) {

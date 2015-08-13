@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<canvas id="canvas" width="600" height="600" style="border:1px solid #c3c3c3;">
+<canvas id="canvas" style="border:1px solid #c3c3c3;">
     Your browser does not support the HTML5 canvas tag.
 </canvas>
 
@@ -10,17 +10,18 @@
 <script src="js/Game.js"></script>
 <script src="js/GameObject.js"></script>
 <script src="js/Tile.js"></script>
+<script src="js/Input.js"></script>
 
 <script>
-    var game = new Game('Minesweeper');
-    var canvas = new Canvas('canvas', 600, 600);
-    var tile = new Tile(0,0,50,50);
+    var game = new Game('canvas', 'Minesweeper', 15, 9, 50);
 
-
-    game.init();
-    game.setCanvas(canvas);
-
-    window.setInterval(game.loop(), 17);
+    window.setInterval(
+            (function(self) {
+                return function(){
+                    self.loop();
+                }
+            })(game), 17
+    );
 </script>
 
 </body>
