@@ -6,7 +6,7 @@ function Canvas(canvasId, width, height){
     canvas.width = width;
     canvas.height = height;
     this.ctx = canvas.getContext("2d");
-};
+}
 
 Canvas.prototype.clear = function() {
     this.ctx.fillStyle = '#FFFFFF';

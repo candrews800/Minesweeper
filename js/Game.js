@@ -1,19 +1,35 @@
-function Game(canvasId, title, row, col, tileSize) {
+function Game() {
+
+}
+
+Game.getInstance = function () {
+    if (!Game.instance) {
+        Game.instance = new Game();
+    }
+    return Game.instance;
+};
+
+Game.prototype.init = function(canvasId, title, col, row, tileSize) {
     this.title = title;
+    this.width = col*tileSize;
+    this.height = row*tileSize;
     this.row = row;
     this.col = col;
     this.tileSize = tileSize;
-    this.width = row*tileSize;
-    this.height = col*tileSize;
     this.canvasId = canvasId;
 
-    this.init();
+    this.initCanvas();
+    this.initEvents();
+    this.initStartMenuStart();
 };
 
-Game.prototype.init = function() {
-    this.initCanvas();
-    this.initInput();
-    this.initTiles();
+Game.prototype.initStartMenuStart = function() {
+    this.currentState = new StartMenuState(this.canvas, this.canvasId, this.width, this.height);
+};
+
+Game.prototype.initMinesweeperState = function(canvas, canvasId, col, row, tileSize) {
+    this.currentState = new MinesweeperState();
+    this.currentState.init(canvas, canvasId, col, row, tileSize);
 };
 
 Game.prototype.initCanvas = function() {
@@ -25,53 +41,29 @@ Game.prototype.initInput = function() {
     this.input.addWatchers(this.canvasId);
 };
 
-Game.prototype.initTiles = function() {
-    var row, col;
+Game.prototype.initEvents = function() {
+    var that = this;
 
-    this.tiles = [];
-
-    for(row = 0; row < this.row; row++) {
-        this.tiles[row] = [];
-        for(col = 0; col < this.col; col++) {
-            this.tiles[row][col] = new Tile(row*this.tileSize,col*this.tileSize,this.tileSize);
-
-            if((row*2 + col*13) % 9){
-                this.tiles[row][col].setType('BOMB');
-            } else {
-                this.tiles[row][col].setType('SAFE');
-            }
-        }
-    }
+    this.event = new GameEvent();
+    this.event.addListener('bomb-click', function() {
+        alert('You clicked a bomb');
+    });
+    this.event.addListener('start', function(options) {
+        that.initMinesweeperState(that.canvas, that.canvasId, options.col, options.row, options.tileSize);
+    });
 };
 
 Game.prototype.loop = function() {
-    // Clear Screen
-    this.canvas.clear();
+    this.currentState.processEvents();
+    this.currentState.doLogic();
 
-    // Get Input
-    var events = this.input.getEvents();
+    // Process Global Events
+    this.event.process();
 
-    // Process Input
-    while (events.length > 0) {
-        var event = events.pop();
-        console.log(event.type);
-    }
-
-    // Do Updates
-
-
-    // Render
-    this.renderObjects();
+    this.currentState.render();
 };
 
-Game.prototype.renderObjects = function() {
-    var row, col;
-
-    if(this.tiles !== 'undefined') {
-        for(row = 0; row < this.row; row++) {
-            for(col = 0; col < this.col; col++) {
-                this.tiles[row][col].render(this.canvas.getContext());
-            }
-        }
-    }
+Game.fireEvent = function(event_name, options) {
+    var game = Game.getInstance();
+    game.event.fire(event_name, options);
 };

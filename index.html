@@ -10,10 +10,16 @@
 <script src="js/Game.js"></script>
 <script src="js/GameObject.js"></script>
 <script src="js/Tile.js"></script>
+<script src="js/Button.js"></script>
 <script src="js/Input.js"></script>
+<script src="js/Event.js"></script>
+<script src="js/GameState.js"></script>
+<script src="js/MinesweeperState.js"></script>
+<script src="js/StartMenuState.js"></script>
 
 <script>
-    var game = new Game('canvas', 'Minesweeper', 15, 9, 50);
+    var game = Game.getInstance();
+    game.init('canvas', 'Minesweeper', 16, 16, 25);
 
     window.setInterval(
         (function(self) {

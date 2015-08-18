@@ -1,6 +1,6 @@
 function Input(){
     this.events = [];
-};
+}
 
 Input.prototype.addWatchers = function(elementId) {
     var that = this;
@@ -23,7 +23,7 @@ Input.prototype.registerEvent = function(event) {
 };
 
 Input.prototype.getEvents = function() {
-    // Get last hover position and add to beginning of events
+    // Get last hover position and add to begin
     this.events.unshift(this.hover);
 
     return this.events;
