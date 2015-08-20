@@ -9,14 +9,17 @@ Game.getInstance = function () {
     return Game.instance;
 };
 
-Game.prototype.init = function(canvasId, title, col, row, tileSize) {
+Game.prototype.init = function(canvasId, title, width, height) {
     this.title = title;
-    this.width = col*tileSize;
-    this.height = row*tileSize;
-    this.row = row;
-    this.col = col;
-    this.tileSize = tileSize;
+    this.width = width;
+    this.height = height;
     this.canvasId = canvasId;
+    this.padding = {
+        left: 15,
+        top: 100,
+        right: 15,
+        down: 15
+    };
 
     this.initCanvas();
     this.initEvents();
@@ -27,9 +30,16 @@ Game.prototype.initStartMenuStart = function() {
     this.currentState = new StartMenuState(this.canvas, this.canvasId, this.width, this.height);
 };
 
-Game.prototype.initMinesweeperState = function(canvas, canvasId, col, row, tileSize) {
+Game.prototype.initMinesweeperState = function(options) {
     this.currentState = new MinesweeperState();
-    this.currentState.init(canvas, canvasId, col, row, tileSize);
+    this.currentState.init({
+        canvas: this.canvas,
+        canvasId: this.canvasId,
+        col: options.col,
+        row: options.row,
+        padding: this.padding,
+        bombCount: options.bombCount
+    });
 };
 
 Game.prototype.initCanvas = function() {
@@ -49,7 +59,7 @@ Game.prototype.initEvents = function() {
         alert('You clicked a bomb');
     });
     this.event.addListener('start', function(options) {
-        that.initMinesweeperState(that.canvas, that.canvasId, options.col, options.row, options.tileSize);
+        that.initMinesweeperState(options);
     });
 };
 
@@ -66,4 +76,17 @@ Game.prototype.loop = function() {
 Game.fireEvent = function(event_name, options) {
     var game = Game.getInstance();
     game.event.fire(event_name, options);
+};
+
+Game.fireStateEvent = function(event_name, options) {
+    var game = Game.getInstance();
+    game.currentState.event.fire(event_name, options);
+};
+
+Game.getDim = function() {
+    var game = Game.getInstance();
+    return {
+        width: game.width,
+        height: game.height
+    }
 };

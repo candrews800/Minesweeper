@@ -12,10 +12,12 @@ function Button(options) {
 
     this.text = options.text;
     this.onClick = options.onClick;
-    this.backgroundColor = 'red';
+    this.backgroundColor = '#cccccc';
     this.fontColor = 'black';
+    this.backgroundHoverColor = 'red';
+    this.fontHoverColor = 'white';
     this.font = "20px serif";
-    this.textBaseLine = "middle";
+    this.textBaseline = "middle";
     this.textAlign = "center";
 
     /**
@@ -31,8 +33,6 @@ function Button(options) {
 
         return insideX && insideY;
     };
-
-    console.log(this);
 };
 
 Button.prototype.update = function() {
@@ -40,29 +40,43 @@ Button.prototype.update = function() {
 };
 
 Button.prototype.render = function(ctx) {
-    // Fill BG
-    ctx.fillStyle = this.backgroundColor;
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    if (this.hover) {
+        // Fill BG
+        ctx.fillStyle = this.backgroundHoverColor;
+        ctx.fillRect(this.x, this.y, this.w, this.h);
 
-    // Write Text
-    ctx.fillStyle = this.fontColor;
-    ctx.font = this.font;
-    ctx.textBaseLine = this.textBaseLine;
-    ctx.textAlign = this.textAlign;
-    ctx.fillText(this.text, this.x + this.w/2, this.y + this.h/2);
+        // Write Text
+        ctx.fillStyle = this.fontHoverColor;
+        ctx.font = this.font;
+        ctx.textBaseline = this.textBaseline;
+        ctx.textAlign = this.textAlign;
+        ctx.fillText(this.text, this.x + this.w/2, this.y + this.h/2);
+    } else {
+        // Fill BG
+        ctx.fillStyle = this.backgroundColor;
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+
+        // Write Text
+        ctx.fillStyle = this.fontColor;
+        ctx.font = this.font;
+        ctx.textBaseline = this.textBaseline;
+        ctx.textAlign = this.textAlign;
+        ctx.fillText(this.text, this.x + this.w/2, this.y + this.h/2);
+    }
 };
 
 Button.prototype.processInput = function(event) {
+    this.hover = false;
     if (typeof event === 'undefined') {
         return;
     }
 
     if (event.constructor.name === 'MouseEvent' && this.isBeingHovered(event)) {
         if (event.type == 'mousemove') {
-
+            this.hover = true;
         }
 
-        if (event.type == 'click') {
+        if (event.type == 'mousedown') {
             this.onClick();
         }
     }

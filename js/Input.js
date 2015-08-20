@@ -5,13 +5,19 @@ function Input(){
 Input.prototype.addWatchers = function(elementId) {
     var that = this;
     var element = document.getElementById(elementId);
-    element.addEventListener('click', function(e) {
+
+    element.addEventListener('mousedown', function(e) {
         that.registerEvent(e);
     });
 
     element.addEventListener('mousemove', function(e) {
         that.registerHover(e);
     });
+
+    // Prevent Right Click
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    }, false);
 };
 
 Input.prototype.registerHover = function(event) {

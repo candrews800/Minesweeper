@@ -28,16 +28,20 @@ function Tile(col, row, tileSize) {
 }
 
 Tile.prototype.update = function() {
-    if (this.clicked) {
-        this.revealed = true;
+    if (this.clicked && ! this.revealed) {
         if (this.type == 'BOMB') {
             Game.fireEvent('bomb-click');
+        } else if (this.nearbyBombs == 0) {
+            Game.fireStateEvent('open-tile-click', {row: this.row, col: this.col});
+        } else {
+            Game.fireStateEvent('tile-click', {row: this.row, col: this.col});
         }
+        this.revealed = true;
     }
 
     if (this.revealed) {
         if(this.type == 'SAFE') {
-            this.color = '#999999';
+            this.color = 'white';
         } else if (this.type == 'BOMB') {
             this.color = 'red';
         }
@@ -45,7 +49,7 @@ Tile.prototype.update = function() {
         if (this.hovered) {
             this.color = '#bbbbbb';
         } else {
-            this.color = '#dddddd';
+            this.color = '#cccccc';
         }
     }
 
@@ -57,21 +61,29 @@ Tile.prototype.update = function() {
 Tile.prototype.render = function(ctx) {
     ctx.fillStyle = this.color;
     ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(this.x, this.y, this.w, this.h);
+
 
     if (this.revealed) {
         ctx.fillStyle = 'black';
-        ctx.font = "20px serif";
+        ctx.font = "bold " + this.w * 0.5 + "px \"Courier New\", Courier, monospace";
         ctx.textBaseline = "middle";
-        ctx.textAlign="center";
-        if (typeof this.nearbyBombs === 'undefined') {
+        ctx.textAlign = "center";
+        if (typeof this.type == 'BOMB') {
             ctx.font = "10px serif";
             ctx.fillText('*boom*', this.x + this.w/2, this.y + this.h/2);
         } else if (this.nearbyBombs) {
+            ctx.fillStyle = this.getFillColor(this.nearbyBombs);
             ctx.fillText(this.nearbyBombs, this.x + this.w/2, this.y + this.h/2);
-        } else {
-
         }
-
+    } else if (this.flagged) {
+        ctx.fillStyle = 'red';
+        ctx.font = this.w * 0.75 + "px serif";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.fillText('\u2691', this.x + this.w/2, this.y + this.h/2);
     }
 };
 
@@ -85,8 +97,18 @@ Tile.prototype.processInput = function(event) {
             this.hovered = true;
         }
 
-        if (event.type == 'click') {
-            this.clicked = true;
+        if (event.type == 'mousedown') {
+            if (event.which == 2 || event.which == 3) {
+                // On Right Click
+                if (this.flagged) {
+                    this.flagged = false;
+                } else {
+                    this.flagged = true;
+                }
+            } else {
+                // On Normal Click
+                this.clicked = true;
+            }
         }
     }
 };
@@ -127,3 +149,31 @@ Tile.prototype.getNearbyBombs = function (allTiles) {
         }
     }
 };
+
+Tile.prototype.setOffset = function(offsetX, offsetY){
+    this.x += offsetX;
+    this.y += offsetY;
+};
+
+Tile.prototype.getFillColor = function(num){
+    switch(num) {
+        case 1:
+            return 'blue';
+        case 2:
+            return 'green';
+        case 3:
+            return 'red';
+        case 4:
+            return '#000080';
+        case 5:
+            return 'brown';
+        case 6:
+            return '#00FFFF';
+        case 7:
+            return 'black';
+        case 8:
+            return 'orange';
+        default:
+            return 'black';
+    }
+}

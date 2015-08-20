@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <style>
+        body{
+            text-align: center;
+        }
+    </style>
+</head>
 <body>
 
 <canvas id="canvas" style="border:1px solid #c3c3c3;">
@@ -19,7 +26,7 @@
 
 <script>
     var game = Game.getInstance();
-    game.init('canvas', 'Minesweeper', 16, 16, 25);
+    game.init('canvas', 'Minesweeper', 600, 600);
 
     window.setInterval(
         (function(self) {

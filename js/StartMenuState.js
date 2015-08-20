@@ -23,9 +23,9 @@ StartMenuState.prototype.initInput = function() {
 StartMenuState.prototype.initUI = function() {
 
     var easyButton = new Button({
-            x: this.width/2,
-            y: 75,
-            w: 200,
+            x: this.width/4,
+            y: this.height/4 + 100,
+            w: 125,
             h: 50,
             text: "Easy",
             renderStyle: "center",
@@ -33,7 +33,8 @@ StartMenuState.prototype.initUI = function() {
                 Game.fireEvent('start', {
                     col: 10,
                     row: 10,
-                    tileSize: 40
+                    tileSize: 40,
+                    bombCount: 20
                 });
             }
         });
@@ -41,8 +42,8 @@ StartMenuState.prototype.initUI = function() {
 
     var medButton = new Button({
             x: this.width/2,
-            y: 150,
-            w: 200,
+            y: this.height/4 + 100,
+            w: 125,
             h: 50,
             text: "Medium",
             renderStyle: "center",
@@ -50,16 +51,17 @@ StartMenuState.prototype.initUI = function() {
                 Game.fireEvent('start', {
                     col: 16,
                     row: 16,
-                    tileSize: 25
+                    tileSize: 25,
+                    bombCount: 32
                 });
             }
         });
     this.objects.push(medButton);
 
     var hardButton = new Button({
-        x: this.width/2,
-        y: 225,
-        w: 200,
+        x: 3*this.width/4,
+        y: this.height/4 + 100,
+        w: 125,
         h: 50,
         text: "Hard",
         renderStyle: "center",
@@ -67,7 +69,8 @@ StartMenuState.prototype.initUI = function() {
             Game.fireEvent('start', {
                 col: 20,
                 row: 20,
-                tileSize: 20
+                tileSize: 20,
+                bombCount: 40
             });
         }
     });
@@ -102,9 +105,9 @@ StartMenuState.prototype.renderUI = function() {
 
     ctx.fillStyle = '#ffffff';
     ctx.font = "48px serif";
-    ctx.textBaseLine = "middle";
+    ctx.textBaseline = "middle";
     ctx.textAlign = "center";
-    ctx.fillText("Minesweeper", this.width/2, 50);
+    ctx.fillText("Minesweeper", this.width/2, this.height/4);
 };
 
 StartMenuState.prototype.processInputEvents = function(event) {
