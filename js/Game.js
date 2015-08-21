@@ -82,7 +82,7 @@ Game.prototype.initEvents = function() {
             that.initMinesweeperState({
                 col: 10,
                 row: 10,
-                bombCount: 2,
+                bombCount: 15,
                 difficulty: 'easy'
             });
         } else if(options.difficulty == 'medium') {

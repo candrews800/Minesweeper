@@ -78,13 +78,14 @@ MinesweeperState.prototype.initEvents = function() {
 };
 
 MinesweeperState.prototype.initTiles = function() {
-    var row, col;
+    var row, col, offset = {};
 
     // Set Initial Tiles
     for(col = 0; col < this.col; col++) {
         for(row = 0; row < this.row; row++) {
-            this.objects.push(new Tile(col,row,this.tileSize));
-            this.objects[this.objects.length - 1].setOffset(this.offsetX, this.offsetY);
+            offset.x = this.offsetX;
+            offset.y = this.offsetY;
+            this.objects.push(new Tile(col,row,this.tileSize, offset, this.startPos));
             this.objects[this.objects.length - 1].setType('SAFE');
         }
     }

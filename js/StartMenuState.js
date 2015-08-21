@@ -21,6 +21,7 @@ StartMenuState.prototype.initInput = function() {
 };
 
 StartMenuState.prototype.initUI = function() {
+    var that = this;
 
     var easyButton = new Button({
             x: this.width/4,

@@ -1,10 +1,18 @@
-function Tile(col, row, tileSize) {
-    GameObject.call(this, col*tileSize, row*tileSize);
+function Tile(col, row, tileSize, offset, startPos) {
+    GameObject.call(this, col*tileSize + offset.x, row*tileSize + offset.y);
 
     this.row = row;
     this.col = col;
     this.w = tileSize;
     this.h = tileSize;
+
+    this.startX = this.x;
+    this.startY = this.y;
+
+    var game = Game.getInstance();
+    var rand = Math.floor((Math.random() * 4));
+    this.x = Math.floor((Math.random() * game.width - this.w));
+    this.y = Math.floor((Math.random() * game.height - this.h));
 
     this.revealed = false;
 
@@ -56,7 +64,20 @@ Tile.prototype.update = function() {
     // Clear Inputs
     this.hovered = false;
     this.clicked = false;
-}
+
+    // Animate Tiles moving to starting place
+    if (this.x < this.startX) {
+        this.x += Math.ceil((this.startX - this.x)*0.1)
+    } else if (this.x > this.startX) {
+        this.x -= Math.ceil((this.x - this.startX)*0.1)
+    }
+
+    if (this.y < this.startY) {
+        this.y += Math.ceil((this.startY - this.y)*0.1)
+    } else if (this.y > this.startY) {
+        this.y -= Math.ceil((this.y - this.startY)*0.1)
+    }
+};
 
 Tile.prototype.render = function(ctx) {
     ctx.fillStyle = this.color;
@@ -154,11 +175,6 @@ Tile.prototype.getNearbyBombs = function (allTiles) {
             }
         }
     }
-};
-
-Tile.prototype.setOffset = function(offsetX, offsetY){
-    this.x += offsetX;
-    this.y += offsetY;
 };
 
 Tile.prototype.getFillColor = function(num){
