@@ -16,7 +16,7 @@ Game.prototype.init = function(canvasId, title, width, height) {
     this.canvasId = canvasId;
     this.padding = {
         left: 15,
-        top: 100,
+        top: 125,
         right: 15,
         down: 15
     };
@@ -31,6 +31,7 @@ Game.prototype.initStartMenuStart = function() {
 };
 
 Game.prototype.initMinesweeperState = function(options) {
+
     this.currentState = new MinesweeperState();
     this.currentState.init({
         canvas: this.canvas,
@@ -38,8 +39,19 @@ Game.prototype.initMinesweeperState = function(options) {
         col: options.col,
         row: options.row,
         padding: this.padding,
-        bombCount: options.bombCount
+        bombCount: options.bombCount,
+        difficulty: options.difficulty
     });
+};
+
+Game.prototype.initGameOverState = function(currentState) {
+    this.currentState = new GameOverState(this.canvas, this.canvasId, this.width, this.height);
+    this.currentState.setPrevState(currentState);
+};
+
+Game.prototype.initWinState = function(currentState) {
+    this.currentState = new WinState(this.canvas, this.canvasId, this.width, this.height);
+    this.currentState.setPrevState(currentState);
 };
 
 Game.prototype.initCanvas = function() {
@@ -54,12 +66,47 @@ Game.prototype.initInput = function() {
 Game.prototype.initEvents = function() {
     var that = this;
 
+    window.setInterval(
+        function(){
+            Game.fireEvent('tick');
+            Game.fireStateEvent('tick');
+        }, 1000
+    );
+
     this.event = new GameEvent();
     this.event.addListener('bomb-click', function() {
-        alert('You clicked a bomb');
+        that.initGameOverState(that.currentState);
     });
     this.event.addListener('start', function(options) {
-        that.initMinesweeperState(options);
+        if(options.difficulty == 'easy') {
+            that.initMinesweeperState({
+                col: 10,
+                row: 10,
+                bombCount: 2,
+                difficulty: 'easy'
+            });
+        } else if(options.difficulty == 'medium') {
+            that.initMinesweeperState({
+                col: 16,
+                row: 16,
+                bombCount: 32,
+                difficulty: 'medium'
+            });
+        } else if(options.difficulty == 'hard') {
+            that.initMinesweeperState({
+                col: 20,
+                row: 20,
+                bombCount: 50,
+                difficulty: 'hard'
+            });
+        }
+    });
+    this.event.addListener('main-menu', function() {
+        that.initStartMenuStart();
+    });
+
+    this.event.addListener('win', function() {
+        that.initWinState(that.currentState);
     });
 };
 

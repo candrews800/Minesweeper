@@ -22,9 +22,13 @@ MinesweeperState.prototype.init = function(options) {;
     this.height = gameDim.height;
 
     this.bombCount = options.bombCount;
+    this.difficulty = options.difficulty;
 
     this.gridWidth = gameDim.width - options.padding.left - options.padding.right;
     this.gridHeight = gameDim.height - options.padding.top - options.padding.down;
+
+    this.timer = 0;
+    this.bombsRemaining = this.bombCount;
 
     if (this.gridWidth < this.gridHeight) {
         // Even Grid Tiles
@@ -59,6 +63,17 @@ MinesweeperState.prototype.initEvents = function() {
     });
     this.event.addListener('tile-click', function(options) {
         that.tileClicked(options);
+    });
+    this.event.addListener('flag', function() {
+        that.bombsRemaining--;
+    });
+    this.event.addListener('unflag', function() {
+        that.bombsRemaining++;
+    });
+    this.event.addListener('tick', function() {
+        if(!that.firstClick){
+            that.timer++;
+        }
     });
 };
 
@@ -129,10 +144,14 @@ MinesweeperState.prototype.renderUI = function() {
     ctx.fillRect(0,0,this.width,this.height);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = "48px serif";
+    ctx.font = "48px \"Courier New\", Courier, monospace";
     ctx.textBaseline = "middle";
     ctx.textAlign = "center";
     ctx.fillText("Minesweeper", this.width/2, 50);
+
+    ctx.font = "20px \"Courier New\", Courier, monospace";
+    ctx.fillText("Bombs: " + this.bombsRemaining, this.width/4, 100);
+    ctx.fillText("Timer: " + this.timer, this.width*3/4, 100);
 };
 
 MinesweeperState.prototype.processInputEvents = function(event) {
@@ -188,7 +207,7 @@ MinesweeperState.prototype.tileClicked = function(options) {
         this.initBombs(options.col, options.row);
         this.firstClick = false;
 
-        var i
+        var i;
         for (i = 0; i < this.objects.length; i++) {
             if (this.objects[i].row == options.row && this.objects[i].col == options.col) {
                 if (this.objects[i].nearbyBombs == 0 ){
@@ -196,5 +215,23 @@ MinesweeperState.prototype.tileClicked = function(options) {
                 }
             }
         }
+    }
+
+    this.checkForWin();
+};
+
+MinesweeperState.prototype.checkForWin = function() {
+    var i, tile, win = true;
+    for (i=0; i<this.objects.length; i++) {
+        if (this.objects[i].constructor.name == 'Tile') {
+            tile = this.objects[i];
+            if (! tile.revealed && tile.type == 'SAFE') {
+                win = false;
+            }
+        }
+    }
+
+    if (win) {
+        Game.fireEvent('win');
     }
 };

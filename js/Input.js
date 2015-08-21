@@ -15,7 +15,7 @@ Input.prototype.addWatchers = function(elementId) {
     });
 
     // Prevent Right Click
-    document.addEventListener('contextmenu', function(e) {
+    element.addEventListener('contextmenu', function(e) {
         e.preventDefault();
     }, false);
 };

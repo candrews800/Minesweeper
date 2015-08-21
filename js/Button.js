@@ -16,7 +16,7 @@ function Button(options) {
     this.fontColor = 'black';
     this.backgroundHoverColor = 'red';
     this.fontHoverColor = 'white';
-    this.font = "20px serif";
+    this.font = "20px \"Courier New\", Courier, monospace";
     this.textBaseline = "middle";
     this.textAlign = "center";
 

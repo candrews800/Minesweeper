@@ -98,16 +98,22 @@ Tile.prototype.processInput = function(event) {
         }
 
         if (event.type == 'mousedown') {
-            if (event.which == 2 || event.which == 3) {
+            if (event.which == 2 || event.which == 3 && !this.revealed) {
                 // On Right Click
                 if (this.flagged) {
                     this.flagged = false;
+                    Game.fireStateEvent('unflag');
                 } else {
                     this.flagged = true;
+                    Game.fireStateEvent('flag');
                 }
             } else {
                 // On Normal Click
                 this.clicked = true;
+                if (this.flagged) {
+                    this.flagged = false;
+                    Game.fireStateEvent('unflag');
+                }
             }
         }
     }

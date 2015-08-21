@@ -31,10 +31,7 @@ StartMenuState.prototype.initUI = function() {
             renderStyle: "center",
             onClick: function () {
                 Game.fireEvent('start', {
-                    col: 10,
-                    row: 10,
-                    tileSize: 40,
-                    bombCount: 20
+                    difficulty: 'easy'
                 });
             }
         });
@@ -49,10 +46,7 @@ StartMenuState.prototype.initUI = function() {
             renderStyle: "center",
             onClick: function () {
                 Game.fireEvent('start', {
-                    col: 16,
-                    row: 16,
-                    tileSize: 25,
-                    bombCount: 32
+                    difficulty: 'medium'
                 });
             }
         });
@@ -67,10 +61,7 @@ StartMenuState.prototype.initUI = function() {
         renderStyle: "center",
         onClick: function () {
             Game.fireEvent('start', {
-                col: 20,
-                row: 20,
-                tileSize: 20,
-                bombCount: 40
+                difficulty: 'hard'
             });
         }
     });
@@ -104,7 +95,7 @@ StartMenuState.prototype.renderUI = function() {
     ctx.fillRect(0,0,this.width,this.height);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = "48px serif";
+    ctx.font = "48px \"Courier New\", Courier, monospace";
     ctx.textBaseline = "middle";
     ctx.textAlign = "center";
     ctx.fillText("Minesweeper", this.width/2, this.height/4);
