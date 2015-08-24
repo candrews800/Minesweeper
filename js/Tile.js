@@ -139,11 +139,8 @@ Tile.prototype.processInput = function(event) {
         }
 
         if (this.isBeingHovered(event)) {
-            // On Normal Click
-            this.clicked = true;
-            if (this.flagged) {
-                this.flagged = false;
-                Game.fireStateEvent('unflag');
+            if (event.type == 'touchstart') {
+                this.clicked = true;
             }
         }
     }
