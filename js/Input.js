@@ -10,6 +10,10 @@ Input.prototype.addWatchers = function(elementId) {
         that.registerEvent(e);
     });
 
+    element.addEventListener('touchstart', function(e) {
+        that.registerEvent(e);
+    });
+
     element.addEventListener('mousemove', function(e) {
         that.registerHover(e);
     });
