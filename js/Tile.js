@@ -9,26 +9,12 @@ function Tile(col, row, tileSize, offset, startPos) {
     this.startX = this.x;
     this.startY = this.y;
 
-    var game = Game.getInstance();
+    var game = Minesweeper.getInstance();
     var rand = Math.floor((Math.random() * 4));
     this.x = Math.floor((Math.random() * game.width - this.w));
     this.y = Math.floor((Math.random() * game.height - this.h));
 
     this.revealed = false;
-
-    /**
-     * Check is mouse is hovering a tile
-     * @param event
-     */
-    this.isBeingHovered = function(event) {
-        var x = event.offsetX;
-        var y = event.offsetY;
-
-        var insideX = this.x < x && x <= this.x + this.w;
-        var insideY = this.y < y && y <= this.y + this.h;
-
-        return insideX && insideY;
-    };
 
     this.setType = function(type) {
         this.type = type;
@@ -38,11 +24,11 @@ function Tile(col, row, tileSize, offset, startPos) {
 Tile.prototype.update = function() {
     if (this.clicked && ! this.revealed) {
         if (this.type == 'BOMB') {
-            Game.fireEvent('bomb-click');
+            Minesweeper.fireEvent('bomb-click');
         } else if (this.nearbyBombs == 0) {
-            Game.fireStateEvent('open-tile-click', {row: this.row, col: this.col});
+            Minesweeper.fireStateEvent('open-tile-click', {row: this.row, col: this.col});
         } else {
-            Game.fireStateEvent('tile-click', {row: this.row, col: this.col});
+            Minesweeper.fireStateEvent('tile-click', {row: this.row, col: this.col});
         }
         this.revealed = true;
     }
@@ -109,40 +95,36 @@ Tile.prototype.render = function(ctx) {
 };
 
 Tile.prototype.processInput = function(event) {
-    if (typeof event === 'undefined') {
+    if (typeof event === 'undefined' || !this.isBeingHovered(event)) {
         return;
     }
 
-    if (event.constructor.name === 'MouseEvent' && this.isBeingHovered(event)) {
-        if (event.type == 'mousemove') {
-            this.hovered = true;
-        }
+    if (event.type == 'mousemove') {
+        this.hover = true;
+    }
 
-        if (event.type == 'mousedown') {
-            if (event.which == 2 || event.which == 3 && !this.revealed) {
-                // On Right Click
-                if (this.flagged) {
-                    this.flagged = false;
-                    Game.fireStateEvent('unflag');
-                } else {
-                    this.flagged = true;
-                    Game.fireStateEvent('flag');
-                }
+    if (event.type == 'mousedown') {
+        if (event.which == 2 || event.which == 3 && !this.revealed) {
+            // On Right Click
+            if (this.flagged) {
+                this.flagged = false;
+                Minesweeper.fireStateEvent('unflag');
             } else {
-                // On Normal Click
-                this.clicked = true;
-                if (this.flagged) {
-                    this.flagged = false;
-                    Game.fireStateEvent('unflag');
-                }
+                this.flagged = true;
+                Minesweeper.fireStateEvent('flag');
+            }
+        } else {
+            // On Normal Click
+            this.clicked = true;
+            if (this.flagged) {
+                this.flagged = false;
+                Minesweeper.fireStateEvent('unflag');
             }
         }
+    }
 
-        if (this.isBeingHovered(event)) {
-            if (event.type == 'touchstart') {
-                this.clicked = true;
-            }
-        }
+    if (event.type == 'touchstart') {
+        this.clicked = true;
     }
 };
 

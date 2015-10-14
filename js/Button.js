@@ -19,21 +19,7 @@ function Button(options) {
     this.font = "20px \"Courier New\", Courier, monospace";
     this.textBaseline = "middle";
     this.textAlign = "center";
-
-    /**
-     * Check is mouse is hovering a button
-     * @param event
-     */
-    this.isBeingHovered = function(event) {
-        var x = event.offsetX;
-        var y = event.offsetY;
-
-        var insideX = this.x < x && x <= this.x + this.w;
-        var insideY = this.y < y && y <= this.y + this.h;
-
-        return insideX && insideY;
-    };
-};
+}
 
 Button.prototype.update = function() {
 
@@ -67,23 +53,19 @@ Button.prototype.render = function(ctx) {
 
 Button.prototype.processInput = function(event) {
     this.hover = false;
-    if (typeof event === 'undefined') {
+    if (typeof event === 'undefined' || !this.isBeingHovered(event)) {
         return;
     }
 
-    if (event.constructor.name === 'MouseEvent' && this.isBeingHovered(event)) {
-        if (event.type == 'mousemove') {
-            this.hover = true;
-        }
-
-        if (event.type == 'mousedown') {
-            this.onClick();
-        }
+    if (event.type == 'mousemove') {
+        this.hover = true;
     }
 
-    if (this.isBeingHovered(event)) {
-        if (event.type == 'touchstart') {
-            this.onClick();
-        }
+    if (event.type == 'mousedown') {
+        this.onClick();
+    }
+
+    if (event.type == 'touchstart') {
+        this.onClick();
     }
 };
